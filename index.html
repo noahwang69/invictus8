@@ -1,238 +1,263 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invictus Markt - Secure Digital Portal</title>
-    <meta name="description" content="Unlock lifetime premium access to Invictus Markt's exclusive community and marketplace for just 9.99 USD in BTC. Secure, anonymous payments with instant verification. Join the elite in digital e-commerce today!">
-    <meta name="keywords" content="Invictus Markt, premium membership, BTC payment, secure marketplace, cryptocurrency e-commerce, anonymous access, digital portal, lifetime access">
-    <meta name="author" content="Invictus Markt">
-    <meta name="robots" content="index, follow">
-    <!-- Open Graph for social sharing -->
-    <meta property="og:title" content="Invictus Markt - Unlock Premium Access Now">
-    <meta property="og:description" content="Gain lifetime access to our secure community and marketplace with a one-time BTC payment. Exclusive benefits await!">
-    <meta property="og:image" content="https://example.com/invictus-logo.png"> <!-- Replace with actual logo URL -->
-    <meta property="og:url" content="https://invictusmarkt.com"> <!-- Replace with actual site URL -->
-    <meta property="og:type" content="website">
-    <!-- Favicon -->
-    <link rel="icon" href="favicon2.png" type="image/png"><!-- Replace with actual favicon -->
+    <title>INVICTUS MARKT</title>
+      
     <style>
         body {
-            font-family: 'Times New Roman', serif; /* Using Times New Roman as Condensed is not standard */
-            font-size: 18px; /* Larger font size for readability */
-            line-height: 1.8; /* Increased line height for comfortable reading */
-            background: #000;
-            color: #0f0;
-            margin: 0;
-            padding: 0;
+            font-family: monospace;
+            background: black;
+            color: lime;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
             position: relative;
-            overflow-x: hidden;
+            /* Removed overflow: hidden to allow scrolling */
         }
         canvas {
             position: fixed;
             top: 0;
             left: 0;
             z-index: -1;
-            opacity: 0.5; /* Subtle Matrix effect in background */
+            opacity: 0.2;
         }
-        header, section, footer {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            text-align: center;
+        h1 {
+    margin: 19px 0;
+    position: relative;
+    text-shadow: 0.10em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
+    animation: glitch 725ms infinite;
+    font-family: Times New Roman', serif; '/* Change to desired font */
+    font-size: 4.5em; /* Adjust size as needed */
+     line-height: 1.5; /* Increased line height for comfortable reading */
+}
+h2, p {
+    margin: 19px 0;
+    position: relative;
+    text-shadow: 0.10em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
+    animation: glitch 725ms infinite;
+    font-family: Times New Roman', serif; '/* Change to desired font */
+    font-size: 4.3em; /* Adjust size as needed */
+     line-height: 1.5; /* Increased line height for comfortable reading */
+}
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
         }
-        h1, h2 {
-            font-size: 2.2em; /* Larger headings for readability */
-            color: #0f0;
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 cyan;
+            clip: rect(0, 900px, 0, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
         }
-        p, li, label, button, input, textarea {
-            font-size: 1.1em; /* Slightly larger text for readability */
+        .glitch::after {
+            left: -2px;
+            text-shadow: 2px 0 red;
+            clip: rect(0, 900px, 0, 0);
+            animation: glitch-anim2 2s infinite linear alternate-reverse;
         }
-        .membership-gate, .login-section {
-            border: 1px solid #0f0;
-            padding: 20px;
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(71px, 9999px, 10px, 0); }
+            5% { clip: rect(36px, 9999px, 75px, 0); }
+            10% { clip: rect(68px, 9999px, 34px, 0); }
+            15% { clip: rect(92px, 9999px, 28px, 0); }
+            20% { clip: rect(40px, 9999px, 83px, 0); }
+            25% { clip: rect(91px, 9999px, 42px, 0); }
+            30% { clip: rect(50px, 9999px, 60px, 0); }
+            35% { clip: rect(20px, 9999px, 90px, 0); }
+            40% { clip: rect(80px, 9999px, 30px, 0); }
+            45% { clip: rect(10px, 9999px, 100px, 0); }
+            50% { clip: rect(55px, 9999px, 55px, 0); }
+            55% { clip: rect(25px, 9999px, 85px, 0); }
+            60% { clip: rect(65px, 9999px, 45px, 0); }
+            65% { clip: rect(35px, 9999px, 75px, 0); }
+            buz70% { clip: rect(75px, 9999px, 35px, 0); }
+            75% { clip: rect(45px, 9999px, 65px, 0); }
+            80% { clip: rect(85px, 9999px, 25px, 0); }
+            85% { clip: rect(15px, 9999px, 95px, 0); }
+            90% { clip: rect(95px, 9999px, 15px, 0); }
+            95% { clip: rect(5px, 9999px, 105px, 0); }
+            100% { clip: rect(71px, 9999px, 10px, 0); }
         }
-        .wallet-address {
-            font-family: monospace;
-            background: #111;
-            padding: 10px;
-            display: inline-block;
+        @keyframes glitch-anim2 {
+            0% { clip: rect(92px, 9999px, 28px, 0); }
+            5% { clip: rect(40px, 9999px, 83px, 0); }
+            10% { clip: rect(91px, 9999px, 42px, 0); }
+            15% { clip: rect(50px, 9999px, 60px, 0); }
+            20% { clip: rect(20px, 9999px, 90px, 0); }
+            25% { clip: rect(80px, 9999px, 30px, 0); }
+            30% { clip: rect(10px, 9999px, 100px, 0); }
+            35% { clip: rect(55px, 9999px, 55px, 0); }
+            40% { clip: rect(25px, 9999px, 85px, 0); }
+            45% { clip: rect(65px, 9999px, 45px, 0); }
+            50% { clip: rect(35px, 9999px, 75px, 0); }
+            55% { clip: rect(75px, 9999px, 35px, 0); }
+            60% { clip: rect(45px, 9999px, 65px, 0); }
+            65% { clip: rect(85px, 9999px, 25px, 0); }
+            70% { clip: rect(15px, 9999px, 95px, 0); }
+            75% { clip: rect(95px, 9999px, 15px, 0); }
+            80% { clip: rect(5px, 9999px, 105px, 0); }
+            85% { clip: rect(71px, 9999px, 10px, 0); }
+            90% { clip: rect(36px, 9999px, 75px, 0); }
+            95% { clip: rect(68px, 9999px, 34px, 0); }
+            100% { clip: rect(92px, 9999px, 28px, 0); }
         }
-        button {
-            background: #0f0;
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-family: 'Times New Roman', serif;
-            font-size: 1.2em; /* Larger button text */
-        }
-        button:hover {
-            background: #0c0;
-        }
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
-            display: block;
-            border: 1px solid #0f0;
-        }
-        .verifier-form, .login-form {
+        form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin: 20px auto;
             max-width: 600px;
+            margin: 20px 0;
+     }       
+    input, button, select, textarea {
+    margin: 5px 0;
+    padding: 10px;
+    font-family: monospace;
+    background: #111;
+    color: lime;
+    border: 1px solid lime;
+
         }
-        input, textarea {
-            background: #111;
-            color: #0f0;
-            border: 1px solid #0f0;
-            padding: 10px;
-            font-family: 'Times New Roman', serif;
-            font-size: 1.1em; /* Larger input text */
+        img.gif {
+            width: 50px;
+            height: auto;
+            vertical-align: middle;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                font-size: 14px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            input, button {
+                padding: 8px;
+                width: 100%; /* Ensure inputs/buttons take full width on mobile */
+            }
+            textarea {
+                width: 100%; /* Ensure textareas take full width on mobile */
+            }
+            section {
+                margin-bottom: 30px;
+            }
         }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
-    
-        <header>       
-    <h1>INVICTUS MARKT</h1>
-    <p> Secure Digital portal v1.0.3</p>
-    <p>Premium selection of TOR goods at a great price</p>   
-       <img src="verified.png" alt="Trulli" width="800" height="128">
-</header>
 
-    <section class="membership-gate">
-        <h2>> MEMBERSHIP ACCESS GATE</h2>
-        <p>Unlock the access with a INVICTUS Membership and community integration for 9.99 USD in BTC. Pay via BTC for secure access.</p>
-        <p>Send Exactly 9.99USD in BTC to this wallet address and then verify with your keys:</p>
-        <div class="wallet-address">bc1q568ayedux3equwqyyp20n6y537fhph5damd2rw <button onclick="navigator.clipboard.writeText('bc1q568ayedux3equwqyyp20n6y537fhph5damd2rw')">COPY</button></div>
-        <p>Awaiting payment... scan QR or copy the address above.</p>
-        <img src="https://api.qrserver.com/v1/create-qr-code/?data=bitcoin:bc1q568ayedux3equwqyyp20n6y537fhph5damd2rw?amount=9.99&label=Invictus%20Membership" alt="BTC QR Code" class="qr-code">
-        <form class="verifier-form">
-            <label for="public-key">Paste a public key, the original message, and an ASCII-armored signature to verify.</label>
-            <textarea id="public-key" rows="4" placeholder="Public Key"></textarea>
-            <textarea id="original-message" rows="4" placeholder="Original Message"></textarea>
-            <textarea id="signature" rows="4" placeholder="Signature"></textarea>
-            <button type="button">Verify Signature</button>
-        
-            <img src="insta.png" alt="Trulli" width="300" height="450">
-        </form>
-        <p>You will receive a secret access code for the private section and the marketplace, please wait until the verifier valid automatically.</p>
-           
-    </section>
-
-
-    <section class="login-section">
-        <h2>> PRIVATE SECTION LOGIN</h2>
-        <p>Enter your secret code to gain access to the exclusive private marketplace. Secure and seamless entry for members only.</p>
-        <form class="login-form">
-            <label for="secret-code">Secret Code:</label>
-            <input type="password" id="secret-code" placeholder="Enter your secret code">
-            <button type="submit">Login</button>
-        </form>
-        
-    </section>
-
-    <section>        
-        <img src="giphy3.gif" alt="Trulli" width="800" height="200">     
-     <h2>> LIVE CRYPTO PRICES</h2>
-    <p>> Payment Gateaway Activated...</p>
-    <ul>
-        <li>BTC/USD: <span id="btc-price">$112,333.44</span></li>
-        <li>ETH/USD: <span id="eth-price">$4,240.33</span></li>
-        <li>LTC/USD: <span id="ltc-price">$114.85</span></li>
-        <li>USDT/USD: <span id="usdt-price">$0.9996</span></li>
-    </ul>
-    <p>Last update: <span id="last-update">--</span> | Source: CoinGecko | Interval: 30s</p>
-    <img src="benefit.png" alt="Trulli" width="800" height="200">
+<section>
+    <h1 class="glitch" data-text="INVICTUS MARKT">INVICTUS MARKT</h1>
+    <p>Premium selection of TOR goods at a great price</p>
+         <img src="giphy777.gif" alt="Trulli" width="300" height="200">
+         <img src="giphy888.gif" alt="Trulli" width="300" height="200">
+    <p>Secure Digital portal v1.0.3</p>
 </section>
-
     <section>
-        <h2>> ABOUT US</h2>
-        <p>Operating since 2018, Invictus Markt delivers trusted digital products & solutions in a secure environment.</p>
-        <img src="service.png" alt="Trulli" width="800" height="200">
+        <h2 class="glitch" data-text="&gt; MEMBERSHIP ACCESS GATE">&gt; MEMBERSHIP ACCESS GATE</h2>
+        <p class="glitch" data-text="Unlock the access with a INVICTUS Membership and community integration for 9.99 USD in BTC. Pay via BTC for secure access.">Unlock the access with a INVICTUS Membership and community integration for 9.99 USD in BTC. Pay via BTC for secure access.</p>
+           <p class="glitch" data-text="Send Exactly 9.99USD in BTC to this wallet address and then verify with your keys:">Send Exactly 9.99USD in BTC to this wallet address and then verify with your keys:</p>
 
-          <img src="red.png" alt="Trulli" width="800" height="200">
+        <p> ★BTC★</p>
+        <p>bc1q568ayedux3equwqyyp20n6y537fhph5damd2rw <button>COPY</button> <img src="btc2.gif" alt="Trulli" width="70" height="50"></p>
+        <p> ★SOLANA★</p>
+        <p>J7fhGRdBixJZCydbzuBcmdB6gFfpcdRHJiDZsuMRfiLP <button>COPY</button> <img src="solana1.gif" alt="Trulli" width="70" height="50"></p>
+        <p> ★USDT ★ TRC20</p>
+        <p>TW1oSHyay89xNiKsGoiRaaLdq7ujaKGM5z <button>COPY</button> <img src="tete.gif" alt="Trulli" width="70" height="50"></p>
+        <p>Awaiting payment...copy the address above and send to the exact adress.</p>
 
+        <p>Equivalent to approximately <span id="btc-value">★★★0.00008893★★★</span> BTC (based on current rate of $112,333.44 per BTC). <p>
+        
+            <img src="btc.gif" alt="Trulli" width="250" height="150">
+               <img src="tether.gif" alt="Trulli" width="250" height="150">
+               <img src="solana.gif" alt="Trulli" width="250" height="150">
 
+        
+        <form>
+            <p>Paste a public key, the original message, and an ASCII-armored signature to verify.</p>
+            <textarea placeholder="Public Key"></textarea>
+            <textarea placeholder="Original Message"></textarea>
+            <textarea placeholder="Signature"></textarea>
+            <button>Verify Signature</button>
+        </form>
+
+        <img src="giphy18.gif" alt="Trulli" width="300" height="200"> 
+        
+        <p>You will receive a secret access code for the private section and the marketplace, please wait until the verifier valid automatically.</p>
     </section>
 
     <section>
-        <h2>> CONTACT</h2>
-            <img src="giphy2.gif" alt="Trulli" width="800" height="200">
+        <h2 class="glitch" data-text="&gt; PRIVATE SECTION LOGIN">&gt; PRIVATE SECTION LOGIN</h2>
+        <p class="glitch" data-text="Enter your secret code to gain access to the exclusive private marketplace. Secure and seamless entry for members only.">Enter your secret code to gain access to the exclusive private marketplace. Secure and seamless entry for members only.</p>
+        <form>
+            <label>Secret Code:</label>
+            <input type="text" placeholder="Enter secret code">
+            <button>Login</button>
 
-        <p>Reach us via encrypted channels. Response time: < 24 hours.</p>
+            <img src="giphy11.gif" alt="Trulli" width="300" height="200"> 
+               <img src="giphy12.gif" alt="Trulli" width="300" height="200">
+             
+        </form>
     </section>
 
-    <footer>
+    <section>
+        <h2 class="glitch" data-text="&gt; LIVE CRYPTO PRICES">&gt; LIVE CRYPTO PRICES</h2>
+        <p>&gt; Accessing data stream...</p>
+        <ul>
+            <li>BTC/USD: <span id="btc-price">$112,333.44</span></li>
+            <li>ETH/USD: <span id="eth-price">$4,240.33</span></li>
+            <li>LTC/USD: <span id="ltc-price">$114.85</span></li>
+            <li>USDT/USD: <span id="usdt-price">0.9996</span></li>
+        </ul>
+        <p>Last update: <span id="last-update">--</span> | Source: CoinGecko | Interval: 30s</p>
+    </section>
+
+    <section>
+        <h2 class="glitch" data-text="&gt; ABOUT US">&gt; ABOUT US</h2>
+        <p class="glitch" data-text="Operating since 2018, Invictus Markt delivers trusted digital products &amp; solutions in a secure environment.">Operating since 2018, Invictus Markt delivers trusted digital products &amp; solutions in a secure environment.</p>
+        <img src="giphy13.gif" alt="Trulli" width="300" height="200"> 
+    </section>
+
+
+
+
+    <section>
+        <h2 class="glitch" data-text="&gt; CONTACT">&gt; CONTACT</h2>
+        <p class="glitch" data-text="Reach us via encrypted channels. Response time: &lt; 24 hours.">Reach us via encrypted channels. Response time: &lt; 24 hours.</p>
+        <img src="giphy14.gif" alt="Trulli" width="300" height="200"> 
+    </section>
+
+    <section>
         <p>© INVICTUS MARKT 2025 • All rights reserved</p>
-    </footer>
+        <img src="giphy15.gif" alt="Trulli" width="300" height="200"> 
+    </section>
 
     <script>
-        // Matrix rain effect
+        // Matrix background
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
-        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
         const fontSize = 14;
         const columns = canvas.width / fontSize;
         const drops = [];
         for (let x = 0; x < columns; x++) drops[x] = 1;
+
         function draw() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0F0';
-            ctx.font = fontSize + 'px Times New Roman';
+            ctx.font = fontSize + 'px monospace';
             for (let i = 0; i < drops.length; i++) {
                 const text = chars.charAt(Math.floor(Math.random() * chars.length));
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -242,90 +267,29 @@
         }
         setInterval(draw, 33);
 
-        // Placeholder for verification logic
-        document.querySelector('.verifier-form button').addEventListener('click', () => {
-            alert('Verification in progress... (Demo)');
-        });
+        // Crypto price updates
+        function updatePrices() {
+            fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,tether&vs_currencies=usd')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('btc-price').textContent = '$' + data.bitcoin.usd.toLocaleString();
+                    document.getElementById('eth-price').textContent = '$' + data.ethereum.usd.toLocaleString();
+                    document.getElementById('ltc-price').textContent = '$' + data.litecoin.usd.toLocaleString();
+                    document.getElementById('usdt-price').textContent = data.tether.usd.toFixed(4);
+                    const btcAmount = (9.99 / data.bitcoin.usd).toFixed(8);
+                    document.getElementById('btc-value').textContent = `${btcAmount}`;
+                    document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+                })
+                .catch(error => console.error('Error fetching prices:', error));
+        }
+        setInterval(updatePrices, 30000);
+        updatePrices();
 
-        // Placeholder for login logic
-        document.querySelector('.login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Logging in with secret code... (Demo)');
+        // Copy button functionality
+        document.querySelectorAll('button')[0].addEventListener('click', () => {
+            navigator.clipboard.writeText('bc1q568ayedux3equwqyyp20n6y537fhph5damd2rw');
+            alert('Address copied to clipboard!');
         });
     </script>
-
-    <script>// Function to fetch and display crypto prices
-async function fetchCryptoPrices() {
-    try {
-        // Fetch prices from CoinGecko API
-        const response = await fetch(
-            'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,tether&vs_currencies=usd'
-        );
-        const data = await response.json();
-
-        // Update DOM with prices
-        document.getElementById('btc-price').textContent = `$${data.bitcoin.usd.toFixed(2)}`;
-        document.getElementById('eth-price').textContent = `$${data.ethereum.usd.toFixed(2)}`;
-        document.getElementById('ltc-price').textContent = `$${data.litecoin.usd.toFixed(2)}`;
-        document.getElementById('usdt-price').textContent = `$${data.tether.usd.toFixed(2)}`;
-
-        // Update last update timestamp
-        const now = new Date();
-        document.getElementById('last-update').textContent = now.toLocaleString();
-    } catch (error) {
-        console.error('Error fetching crypto prices:', error);
-        document.getElementById('btc-price').textContent = 'Error';
-        document.getElementById('eth-price').textContent = 'Error';
-        document.getElementById('ltc-price').textContent = 'Error';
-        document.getElementById('usdt-price').textContent = 'Error';
-        document.getElementById('last-update').textContent = 'Error';
-    }
-}
-
-// Fetch prices immediately on page load
-fetchCryptoPrices();
-
-// Refresh prices every 30 seconds
-setInterval(fetchCryptoPrices, 30000);
-</section>
-
-    <h2>> LIVE CRYPTO PRICES</h2>
-    <p>> Accessing data stream...</p>
-    <ul>
-        <li>BTC/USD: <span id="btc-price">--</span></li>
-        <li>ETH/USD: <span id="eth-price">--</span></li>
-        <li>LTC/USD: <span id="ltc-price">--</span></li>
-        <li>USDT/USD: <span id="usdt-price">--</span></li>
-    </ul>
-    <p>Last update: <span id="last-update">--</span> | Source: CoinGecko | Interval: 30s</p>
-
-<\section>
-
-<script>
-// Existing Matrix rain effect and other scripts...
-
-// Crypto price fetching
-async function fetchCryptoPrices() {
-    try {
-        const response = await fetch(
-            'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,tether&vs_currencies=usd'
-        );
-        const data = await response.json();
-        document.getElementById('btc-price').textContent = `$${data.bitcoin.usd.toFixed(2)}`;
-        document.getElementById('eth-price').textContent = `$${data.ethereum.usd.toFixed(2)}`;
-        document.getElementById('ltc-price').textContent = `$${data.litecoin.usd.toFixed(2)}`;
-        document.getElementById('usdt-price').textContent = `$${data.tether.usd.toFixed(2)}`;
-        document.getElementById('last-update').textContent = new Date().toLocaleString();
-    } catch (error) {
-        console.error('Error fetching crypto prices:', error);
-        document.getElementById('btc-price').textContent = 'Error';
-        document.getElementById('eth-price').textContent = 'Error';
-        document.getElementById('ltc-price').textContent = 'Error';
-        document.getElementById('usdt-price').textContent = 'Error';
-        document.getElementById('last-update').textContent = 'Error';
-    }
-}
-fetchCryptoPrices();
-setInterval(fetchCryptoPrices, 30000);
-
-</script>
+</body>
+</html>
